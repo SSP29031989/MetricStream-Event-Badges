@@ -1,312 +1,379 @@
-<h2 class="sr-only">MetricStream event badge generator for Manila and Kuala Lumpur roundtables</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MetricStream · Attendance & Check-In</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:system-ui,sans-serif;background:var(--surface-0);color:var(--text-primary);padding:2rem 1rem}
-.wrap{max-width:700px;margin:0 auto}
-.header{text-align:center;margin-bottom:1.5rem}
-.header h1{font-size:20px;font-weight:500;margin-bottom:4px}
-.header p{font-size:13px;color:var(--text-secondary)}
-.event-tabs{display:flex;gap:8px;margin-bottom:1.25rem}
-.etab{flex:1;padding:10px 12px;border:0.5px solid var(--border);border-radius:var(--radius);background:var(--surface-1);cursor:pointer;text-align:center}
-.etab.active{border:2px solid #1d9e75;background:#e1f5ee}
-.etab .city{font-weight:500;font-size:13px;color:var(--text-primary);margin-bottom:2px}
-.etab .date{font-size:11px;color:var(--text-secondary)}
-.etab.active .city{color:#0f6e56}
-.etab.active .date{color:#1d9e75}
-.mode-tabs{display:flex;gap:0;margin-bottom:1.25rem;border:0.5px solid var(--border);border-radius:var(--radius);overflow:hidden}
-.mtab{flex:1;padding:9px;text-align:center;font-size:13px;cursor:pointer;background:var(--surface-1);color:var(--text-secondary);border:none;transition:all .15s}
-.mtab.active{background:#1d9e75;color:white;font-weight:500}
-.card{background:var(--surface-2);border:0.5px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:1.25rem}
-.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:10px}
-.fg label{font-size:12px;color:var(--text-secondary);font-weight:500}
-input,select,textarea{width:100%;padding:8px 10px;border:0.5px solid var(--border);border-radius:var(--radius);font-size:13px;background:var(--surface-2);color:var(--text-primary)}
-textarea{resize:vertical;min-height:120px;font-family:monospace;font-size:12px}
-input:focus,select:focus,textarea:focus{outline:none;border-color:#1d9e75;box-shadow:0 0 0 2px rgba(29,158,117,0.12)}
-.btn{padding:9px 18px;border:0.5px solid var(--border);border-radius:var(--radius);background:var(--surface-1);color:var(--text-primary);font-size:13px;cursor:pointer}
-.btn:hover{background:var(--surface-0)}
-.btn-green{background:#1d9e75;color:white;border-color:#1d9e75}
-.btn-green:hover{background:#0f6e56}
-.hint{font-size:11px;color:var(--text-muted);margin-top:4px}
-.badge-section h3{font-size:13px;font-weight:500;color:var(--text-secondary);margin-bottom:10px;text-align:center}
-.badge-wrap{display:flex;justify-content:center;margin-bottom:1rem}
-.actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
-.bulk-count{font-size:12px;color:var(--text-secondary);text-align:center;margin-bottom:8px}
-.parse-error{font-size:12px;color:#a32d2d;background:#fcebeb;border:0.5px solid #f7c1c1;border-radius:var(--radius);padding:8px 12px;margin-top:8px}
-
-/* ── Badge layout ── */
-.badge-canvas{
-  width:380px;height:220px;
-  border-radius:10px;overflow:hidden;
-  border:1px solid #d0d0cc;
-  background:#ffffff;
-  display:grid;
-  grid-template-rows:auto 1fr auto;
-  font-family:'Segoe UI',system-ui,sans-serif;
-}
-.b-header{
-  background:#1a2744;
-  padding:10px 16px 8px;
-}
-.b-event-label{
-  font-size:9px;font-weight:700;letter-spacing:1.5px;
-  color:#4ecdc4;text-transform:uppercase;margin-bottom:6px;
-}
-.b-name{
-  font-size:22px;font-weight:700;color:#4ecdc4;line-height:1.1;
-}
-.b-org-title{
-  font-size:11px;color:#c8d0dc;margin-top:5px;
-}
-.b-body{
-  background:#ffffff;
-  display:flex;align-items:center;
-  padding:10px 16px;gap:14px;
-}
-.b-qr-box{
-  width:68px;height:68px;flex-shrink:0;
-}
-.b-right{
-  display:flex;flex-direction:column;gap:4px;
-}
-.b-badge-id{
-  font-size:13px;font-weight:700;color:#1a2744;letter-spacing:.5px;
-}
-.b-email{
-  font-size:11px;color:#4ecdc4;
-}
-.b-footer{
-  background:#f5f5f0;
-  border-top:1px solid #e0e0da;
-  padding:5px 16px;
-  display:flex;justify-content:space-between;align-items:center;
-}
-.b-ms-logo{
-  display:flex;align-items:center;gap:5px;
-}
-.b-ms-icon svg{width:18px;height:14px;}
-.b-ms-wordmark{font-size:11px;font-weight:700;color:#1a2744;letter-spacing:-.2px;}
-.b-footer-date{font-size:9px;color:#888;letter-spacing:.3px;}
-
+:root{--navy:#1a2744;--teal:#4ecdc4;--teal-dark:#1d9e75;--gold:#b5863a;--bg:#f5f2ee;--white:#fff;--border:#e0dbd2;--text:#1a2744;--muted:#6b7280;--radius:8px}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+/* Header */
+.site-header{text-align:center;padding:2rem 1rem 1.5rem}
+.site-header .eyebrow{font-size:11px;font-weight:700;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:8px}
+.site-header h1{font-size:32px;font-weight:700;color:var(--navy);margin-bottom:6px}
+.site-header p{font-size:14px;color:var(--muted)}
+/* Step tabs */
+.tabs{display:flex;gap:0;background:var(--white);border:1px solid var(--border);border-radius:10px;overflow:hidden;max-width:700px;margin:0 auto 1.5rem;padding:6px;gap:4px}
+.tab{flex:1;padding:10px 6px;text-align:center;font-size:13px;font-weight:500;color:var(--muted);background:transparent;border:none;border-radius:6px;cursor:pointer;transition:all .15s;white-space:nowrap}
+.tab.active{background:var(--navy);color:var(--white)}
+/* Main panel */
+.panel{max-width:700px;margin:0 auto;background:var(--white);border:1px solid var(--border);border-radius:12px;padding:1.5rem}
+/* Form */
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+.fg label{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted)}
+input,select,textarea{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;font-family:inherit;background:var(--white);color:var(--text)}
+textarea{resize:vertical;min-height:160px;font-family:monospace;font-size:12px}
+input:focus,textarea:focus{outline:none;border-color:var(--teal-dark)}
+.hint{font-size:11px;color:var(--muted);margin-top:5px;line-height:1.5}
+.btn-row{display:flex;gap:10px;margin-top:4px;flex-wrap:wrap}
+.btn{padding:10px 20px;border-radius:var(--radius);font-size:13px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--white);color:var(--text);transition:all .15s}
+.btn:hover{background:var(--bg)}
+.btn-primary{background:var(--navy);color:var(--white);border-color:var(--navy)}
+.btn-primary:hover{background:#253660}
+.btn-teal{background:var(--teal-dark);color:var(--white);border-color:var(--teal-dark)}
+.btn-teal:hover{background:#0f6e56}
+/* Badge print grid */
+.badge-grid{display:flex;flex-wrap:wrap;gap:14px;justify-content:flex-start}
+/* Badge */
+.badge{width:360px;border-radius:10px;overflow:hidden;border:1px solid #d0d0cc;background:#fff;font-family:'Segoe UI',system-ui,sans-serif;page-break-inside:avoid}
+.b-header{background:var(--navy);padding:12px 16px 10px}
+.b-eyebrow{font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--teal);text-transform:uppercase;margin-bottom:5px}
+.b-name{font-size:20px;font-weight:700;color:var(--teal);line-height:1.1}
+.b-sub{font-size:11px;color:#c8d0dc;margin-top:4px}
+.b-body{display:flex;align-items:center;gap:12px;padding:10px 16px;background:#fff;min-height:80px}
+.b-qr{width:64px;height:64px;flex-shrink:0}
+.b-qr img,.b-qr canvas{width:64px!important;height:64px!important}
+.b-right{flex:1}
+.b-id{font-size:13px;font-weight:700;color:var(--navy);letter-spacing:.3px;margin-bottom:3px}
+.b-email{font-size:11px;color:var(--teal-dark)}
+.b-footer{background:#f5f2ee;border-top:1px solid #e0dbd2;padding:6px 16px;display:flex;justify-content:space-between;align-items:center}
+.b-logo{display:flex;align-items:center;gap:5px}
+.b-logo-text{font-size:11px;font-weight:700;color:var(--navy)}
+.b-date{font-size:9px;color:var(--muted);letter-spacing:.3px}
+/* Scanner */
+.scanner-area{text-align:center;padding:2rem 0}
+.scanner-box{border:2px dashed var(--border);border-radius:12px;padding:3rem;margin-bottom:1.5rem;color:var(--muted);font-size:14px}
+.scan-input-wrap{display:flex;gap:8px;max-width:400px;margin:0 auto}
+.scan-result{margin-top:1rem;padding:1rem;border-radius:var(--radius);font-size:14px;font-weight:500;display:none}
+.scan-ok{background:#e1f5ee;color:#0f6e56;border:1px solid #9fe1cb}
+.scan-dupe{background:#fffbeb;color:#b45309;border:1px solid #fcd34d}
+.scan-err{background:#fef2f2;color:#991b1b;border:1px solid #fca5a5}
+/* Dashboard */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:1.5rem}
+.stat{background:var(--bg);border-radius:var(--radius);padding:1rem;text-align:center}
+.stat-num{font-size:28px;font-weight:700;color:var(--navy)}
+.stat-label{font-size:11px;color:var(--muted);margin-top:2px;text-transform:uppercase;letter-spacing:.5px}
+.attendee-table{width:100%;border-collapse:collapse;font-size:13px}
+.attendee-table th{text-align:left;padding:8px 10px;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);border-bottom:1px solid var(--border)}
+.attendee-table td{padding:9px 10px;border-bottom:1px solid var(--border);vertical-align:middle}
+.pill{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
+.pill-in{background:#e1f5ee;color:#0f6e56}
+.pill-out{background:#f5f2ee;color:#9ca3af}
+.search-bar{margin-bottom:1rem}
+.search-bar input{max-width:300px;font-size:13px}
+/* Event selector */
+.event-select-row{display:flex;gap:8px;margin-bottom:1.25rem}
+.esel{flex:1;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius);background:var(--white);cursor:pointer;text-align:center;transition:all .15s}
+.esel.active{border:2px solid var(--teal-dark);background:#e1f5ee}
+.esel .ec{font-weight:600;font-size:13px;color:var(--navy);margin-bottom:2px}
+.esel .ed{font-size:11px;color:var(--muted)}
+.esel.active .ec{color:#0f6e56}
 /* Print */
 @media print{
-  body,html{background:white!important;padding:0;margin:0}
+  body{background:white}
   .no-print{display:none!important}
-  .print-grid{display:flex;flex-wrap:wrap;gap:6mm;padding:8mm}
-  .badge-canvas{
-    width:9.5cm;height:5.5cm;
-    border-radius:6px;
-    -webkit-print-color-adjust:exact;print-color-adjust:exact;
-    page-break-inside:avoid;
-  }
-  .b-name{font-size:18px}
-  .b-qr-box{width:58px;height:58px}
+  .badge-grid{display:flex;flex-wrap:wrap;gap:6mm;padding:8mm}
+  .badge{width:9.5cm;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .b-name{font-size:16px}
+  .panel,.tabs,.site-header{display:none}
+  .print-only-grid{display:block!important}
 }
+.print-only-grid{display:none}
 </style>
+</head>
+<body>
 
-<div class="wrap">
-  <div class="header no-print">
-    <h1>MetricStream · Event Badge Generator</h1>
-    <p>Styled to match your reference design · aqua green · with QR code</p>
-  </div>
+<div class="site-header no-print">
+  <div class="eyebrow">Attendance · Check-In</div>
+  <h1>Driving AI Governance</h1>
+  <p>Generate unique QR badges, then scan at the door for live attendance</p>
+</div>
 
-  <div class="event-tabs no-print">
-    <div class="etab active" id="tab-manila" onclick="selEvent('manila')">
-      <div class="city">🇵🇭 Manila, Philippines</div>
-      <div class="date">21 July 2026 · 8:30 AM – 2:00 PM PHT</div>
+<div class="tabs no-print" id="tabs">
+  <button class="tab active" onclick="goTo(0)">1 · Setup List</button>
+  <button class="tab" onclick="goTo(1)">2 · Badges</button>
+  <button class="tab" onclick="goTo(2)">3 · Scan</button>
+  <button class="tab" onclick="goTo(3)">4 · Dashboard</button>
+</div>
+
+<!-- STEP 1: SETUP -->
+<div class="panel no-print" id="step-0">
+  <div class="event-select-row">
+    <div class="esel active" id="esel-manila" onclick="selEv('manila')">
+      <div class="ec">🇵🇭 Manila, Philippines</div>
+      <div class="ed">21 July 2026 · 8:30 AM – 2:00 PM PHT</div>
     </div>
-    <div class="etab" id="tab-kl" onclick="selEvent('kl')">
-      <div class="city">🇲🇾 Kuala Lumpur, Malaysia</div>
-      <div class="date">23 July 2026 · 8:30 AM – 2:00 PM PHT</div>
-    </div>
-  </div>
-
-  <div class="mode-tabs no-print">
-    <button class="mtab active" onclick="selMode('single')">Single badge</button>
-    <button class="mtab" onclick="selMode('bulk')">Bulk print</button>
-  </div>
-
-  <!-- SINGLE -->
-  <div id="single-mode">
-    <div class="card no-print">
-      <div class="row2">
-        <div class="fg"><label>First name</label><input id="fname" placeholder="Oliver Carlos" oninput="render()"></div>
-        <div class="fg"><label>Last name</label><input id="lname" placeholder="Odulio" oninput="render()"></div>
-      </div>
-      <div class="fg"><label>Organisation</label><input id="org" placeholder="Aboitiz InfraCapital" oninput="render()"></div>
-      <div class="fg"><label>Job title</label><input id="jobtitle" placeholder="Chief Risk Officer" oninput="render()"></div>
-      <div class="fg"><label>Email address</label><input id="email" placeholder="oliver.odulio@aboitiz.com" oninput="render()"></div>
-      <div class="fg"><label>Badge ID (auto-generated or enter custom)</label><input id="badgeid" placeholder="EXPLEOGRC-001" oninput="render()"></div>
-    </div>
-    <div class="badge-section">
-      <h3 class="no-print">Preview</h3>
-      <div class="badge-wrap" id="single-preview"></div>
-      <div class="actions no-print">
-        <button class="btn" onclick="resetSingle()">↺ Reset</button>
-        <button class="btn btn-green" onclick="window.print()">⎙ Print badge</button>
-      </div>
+    <div class="esel" id="esel-kl" onclick="selEv('kl')">
+      <div class="ec">🇲🇾 Kuala Lumpur, Malaysia</div>
+      <div class="ed">23 July 2026 · 8:30 AM – 2:00 PM PHT</div>
     </div>
   </div>
-
-  <!-- BULK -->
-  <div id="bulk-mode" style="display:none">
-    <div class="card no-print">
-      <div class="fg">
-        <label>Attendee list — one per line</label>
-        <textarea id="bulkdata" placeholder="First Last | Organisation | Job Title | Email&#10;Oliver Carlos Odulio | Aboitiz InfraCapital | Chief Risk Officer | oliver.odulio@aboitiz.com&#10;Maria Santos | BDO Unibank | Head of Compliance | m.santos@bdo.com.ph" oninput="renderBulk()"></textarea>
-        <div class="hint">Format: Full Name | Organisation | Job Title | Email — separate each field with a pipe |</div>
-      </div>
-      <div id="parse-error" class="parse-error" style="display:none"></div>
+  <div class="form-row">
+    <div class="fg" style="margin:0">
+      <label>Event name</label>
+      <input id="evname" value="Driving AI Governance">
     </div>
-    <div class="bulk-count no-print" id="bulk-count"></div>
-    <div class="actions no-print" style="margin-bottom:1rem">
-      <button class="btn btn-green" onclick="window.print()">⎙ Print all badges</button>
+    <div class="fg" style="margin:0">
+      <label>ID prefix</label>
+      <input id="idprefix" value="MSGRC">
     </div>
-    <div class="print-grid" id="bulk-preview"></div>
+  </div>
+  <div class="fg" style="margin-top:14px">
+    <label>Public link to this page (optional)</label>
+    <input id="publink" placeholder="https://yourusername.github.io/MetricStream-Event-Badges/">
+    <div class="hint">Paste your GitHub Pages URL here so QR codes open a check-in confirmation when scanned by any phone camera.</div>
+  </div>
+  <div class="fg">
+    <label>Attendee list — Name, Company, Designation, Email (one per line)</label>
+    <textarea id="attendeelist" placeholder="John Doe, Acme Corp, Chief Risk Officer, john.doe@acme.com&#10;Maria Santos, BDO Unibank, Head of Compliance, m.santos@bdo.com.ph&#10;Ahmad Razif, Maybank, CISO, a.razif@maybank.com"></textarea>
+    <div class="hint">Paste directly from Excel/Sheets (tab or comma separated). First row auto-skipped if it looks like a header. Each person gets a unique ID and QR code — all data stays in this app only.</div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="generate()">Generate unique QR codes</button>
+    <button class="btn" onclick="loadSample()">Load sample data</button>
   </div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script>
-var curEvent='manila', curMode='single', badgeCounter=1;
+<!-- STEP 2: BADGES -->
+<div class="panel no-print" id="step-1" style="display:none">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:8px">
+    <div style="font-size:14px;color:var(--muted)" id="badge-count-label"></div>
+    <div class="btn-row" style="margin:0">
+      <button class="btn" onclick="goTo(0)">← Back</button>
+      <button class="btn btn-teal" onclick="window.print()">⎙ Print all badges</button>
+    </div>
+  </div>
+  <div class="badge-grid" id="badge-grid"></div>
+</div>
 
+<!-- STEP 3: SCAN -->
+<div class="panel no-print" id="step-2" style="display:none">
+  <div class="scanner-area">
+    <div class="scanner-box">
+      <div style="font-size:32px;margin-bottom:8px">📷</div>
+      <div style="font-weight:600;margin-bottom:6px">Type or paste badge ID to check in</div>
+      <div style="font-size:12px">Or use a USB barcode scanner — it works like a keyboard</div>
+    </div>
+    <div class="scan-input-wrap">
+      <input id="scaninput" placeholder="e.g. MSGRC-001" style="flex:1" onkeydown="if(event.key==='Enter')doScan()">
+      <button class="btn btn-primary" onclick="doScan()">Check in</button>
+    </div>
+    <div class="scan-result" id="scan-result"></div>
+  </div>
+</div>
+
+<!-- STEP 4: DASHBOARD -->
+<div class="panel no-print" id="step-3" style="display:none">
+  <div class="stats">
+    <div class="stat"><div class="stat-num" id="d-total">0</div><div class="stat-label">Registered</div></div>
+    <div class="stat"><div class="stat-num" id="d-checked">0</div><div class="stat-label">Checked in</div></div>
+    <div class="stat"><div class="stat-num" id="d-pct">0%</div><div class="stat-label">Attendance</div></div>
+  </div>
+  <div class="search-bar">
+    <input id="search" placeholder="Search by name, company or ID…" oninput="renderDashboard()">
+  </div>
+  <table class="attendee-table">
+    <thead><tr><th>ID</th><th>Name</th><th>Company</th><th>Designation</th><th>Status</th><th>Time</th></tr></thead>
+    <tbody id="dashboard-body"></tbody>
+  </table>
+  <div style="margin-top:1rem;display:flex;gap:8px;flex-wrap:wrap">
+    <button class="btn btn-teal" onclick="exportCSV()">↓ Export CSV</button>
+    <button class="btn" onclick="resetCheckins()">↺ Reset check-ins</button>
+  </div>
+</div>
+
+<!-- PRINT ONLY -->
+<div class="print-only-grid" id="print-grid"></div>
+
+<script>
+var attendees=[], curEv='manila';
 var EVENTS={
-  manila:{label:'DRIVING AI GOVERNANCE',city:'Manila, Philippines',date:'21 July 2026',url:'https://info.metricstream.com/roundtable/the-ai-way-to-building-an-enterprise-grc-program-manila.html'},
-  kl:{label:'DRIVING AI GOVERNANCE',city:'Kuala Lumpur, Malaysia',date:'23 July 2026',url:'https://info.metricstream.com/roundtable/the-ai-way-to-building-an-enterprise-grc-program-malaysia.html'}
+  manila:{city:'Manila, Philippines',date:'21 July 2026',label:'DRIVING AI GOVERNANCE',url:''},
+  kl:{city:'Kuala Lumpur, Malaysia',date:'23 July 2026',label:'DRIVING AI GOVERNANCE',url:''}
 };
 
-var MS_ICON='<svg viewBox="0 0 36 28" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.5 22.5C3.5 20.5 2 17.5 2 14C2 7.4 7.4 2 14 2C17.2 2 20 3.2 22.1 5.2L17 10.3C15.9 9.5 14.5 9 13 9C9.7 9 7 11.7 7 15C7 16.5 7.5 17.9 8.4 19L5.5 22.5Z" fill="url(#teal1)"/><path d="M22.5 5.5C24.5 7.5 26 10.5 26 14C26 20.6 20.6 26 14 26C10.8 26 8 24.8 5.9 22.8L11 17.7C12.1 18.5 13.5 19 15 19C18.3 19 21 16.3 21 13C21 11.5 20.5 10.1 19.6 9L22.5 5.5Z" fill="url(#teal2)"/><defs><linearGradient id="teal1" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse"><stop stop-color="#00E5CC"/><stop offset="1" stop-color="#00B89C"/></linearGradient><linearGradient id="teal2" x1="6" y1="6" x2="26" y2="26" gradientUnits="userSpaceOnUse"><stop stop-color="#00C8B0"/><stop offset="1" stop-color="#009980"/></linearGradient></defs></svg>';
-
-function genId(name){
-  var prefix=(name||'ATTENDEE').replace(/\s+/g,'').substring(0,6).toUpperCase();
-  return prefix+'GRC-'+String(badgeCounter++).padStart(3,'0');
+function selEv(e){
+  curEv=e;
+  document.getElementById('esel-manila').classList.toggle('active',e==='manila');
+  document.getElementById('esel-kl').classList.toggle('active',e==='kl');
 }
 
-function selEvent(e){
-  curEvent=e;
-  ['manila','kl'].forEach(function(k){document.getElementById('tab-'+k).classList.toggle('active',k===e);});
-  curMode==='single'?render():renderBulk();
+function goTo(n){
+  for(var i=0;i<4;i++){
+    document.getElementById('step-'+i).style.display=i===n?'':'none';
+    document.querySelectorAll('.tab')[i].classList.toggle('active',i===n);
+  }
+  if(n===3)renderDashboard();
 }
 
-function selMode(m){
-  curMode=m;
-  document.querySelectorAll('.mtab').forEach(function(el,i){el.classList.toggle('active',(i===0&&m==='single')||(i===1&&m==='bulk'));});
-  document.getElementById('single-mode').style.display=m==='single'?'':'none';
-  document.getElementById('bulk-mode').style.display=m==='bulk'?'':'none';
-  m==='single'?render():renderBulk();
+function loadSample(){
+  document.getElementById('attendeelist').value=
+'Oliver Carlos Odulio, Aboitiz InfraCapital, Chief Risk Officer, oliver.odulio@aboitiz.com\nMaria Santos, BDO Unibank, Head of Compliance, m.santos@bdo.com.ph\nAhmad Razif, Maybank, CISO, a.razif@maybank.com\nJuan dela Cruz, Globe Telecom, Head of Enterprise Risk, j.delacruz@globe.com.ph\nAnna Reyes, Security Bank, Chief Compliance Officer, a.reyes@securitybank.com';
 }
 
-function buildBadge(name,org,title,email,badgeId,ev){
-  var canvas=document.createElement('div');
-  canvas.className='badge-canvas';
+function generate(){
+  var raw=document.getElementById('attendeelist').value.trim();
+  if(!raw){alert('Please enter at least one attendee.');return;}
+  var prefix=document.getElementById('idprefix').value.trim()||'MSGRC';
+  var evname=document.getElementById('evname').value.trim()||'Driving AI Governance';
+  var publink=document.getElementById('publink').value.trim();
+  EVENTS[curEv].url=publink||(window.location.href.split('?')[0]);
+  document.querySelector('.site-header h1').textContent=evname;
+
+  var lines=raw.split('\n').filter(function(l){return l.trim();});
+  // skip header if first line has no @
+  if(lines.length&&lines[0].indexOf('@')===-1&&lines[0].indexOf(',')===-1&&lines[0].indexOf('\t')===-1){lines.shift();}
+
+  attendees=[];
+  lines.forEach(function(line,i){
+    var sep=line.indexOf('\t')>-1?'\t':',';
+    var p=line.split(sep).map(function(x){return x.trim();});
+    var id=prefix+'-'+String(i+1).padStart(3,'0');
+    attendees.push({id:id,name:p[0]||'',company:p[1]||'',designation:p[2]||'',email:p[3]||'',checkedIn:false,checkTime:''});
+  });
+
+  buildBadges();
+  goTo(1);
+}
+
+function buildBadges(){
+  var grid=document.getElementById('badge-grid');
+  var pgrid=document.getElementById('print-grid');
+  grid.innerHTML=''; pgrid.innerHTML='';
+  document.getElementById('badge-count-label').textContent=attendees.length+' badge'+(attendees.length===1?'':'s')+' · '+EVENTS[curEv].city;
+
+  attendees.forEach(function(a,idx){
+    var b=makeBadge(a,'bg-'+idx);
+    grid.appendChild(b);
+    var b2=makeBadge(a,'pg-'+idx);
+    pgrid.appendChild(b2);
+  });
+}
+
+function makeBadge(a,prefix){
+  var ev=EVENTS[curEv];
+  var url=ev.url?(ev.url+(ev.url.indexOf('?')>-1?'&':'?')+'id='+encodeURIComponent(a.id)):a.id;
+
+  var wrap=document.createElement('div');
+  wrap.className='badge';
 
   // Header
-  var hdr=document.createElement('div');
-  hdr.className='b-header';
-  var evLbl=document.createElement('div');
-  evLbl.className='b-event-label';
-  evLbl.textContent=ev.label;
-  var bName=document.createElement('div');
-  bName.className='b-name';
-  bName.textContent=name||'Attendee Name';
-  var bOrgTitle=document.createElement('div');
-  bOrgTitle.className='b-org-title';
-  bOrgTitle.textContent=(org||'Organisation')+(title?' · '+title:'');
-  hdr.appendChild(evLbl);hdr.appendChild(bName);hdr.appendChild(bOrgTitle);
+  var hdr=document.createElement('div');hdr.className='b-header';
+  var ey=document.createElement('div');ey.className='b-eyebrow';ey.textContent=ev.label;
+  var nm=document.createElement('div');nm.className='b-name';nm.textContent=a.name||'Attendee';
+  var sb=document.createElement('div');sb.className='b-sub';sb.textContent=(a.company||'')+(a.designation?' · '+a.designation:'');
+  hdr.appendChild(ey);hdr.appendChild(nm);hdr.appendChild(sb);
 
   // Body
-  var body=document.createElement('div');
-  body.className='b-body';
-  var qrBox=document.createElement('div');
-  qrBox.className='b-qr-box';
-  var qrId='qr_'+Math.random().toString(36).slice(2);
-  qrBox.id=qrId;
-  var right=document.createElement('div');
-  right.className='b-right';
-  var bid=document.createElement('div');
-  bid.className='b-badge-id';
-  bid.textContent=badgeId;
-  var eml=document.createElement('div');
-  eml.className='b-email';
-  eml.textContent=email||'';
-  right.appendChild(bid);if(email)right.appendChild(eml);
-  body.appendChild(qrBox);body.appendChild(right);
+  var body=document.createElement('div');body.className='b-body';
+  var qrEl=document.createElement('div');qrEl.className='b-qr';
+  var qid=prefix+'_qr';qrEl.id=qid;
+  var right=document.createElement('div');right.className='b-right';
+  var bid=document.createElement('div');bid.className='b-id';bid.textContent=a.id;
+  var eml=document.createElement('div');eml.className='b-email';eml.textContent=a.email||'';
+  right.appendChild(bid);if(a.email)right.appendChild(eml);
+  body.appendChild(qrEl);body.appendChild(right);
 
   // Footer
-  var ftr=document.createElement('div');
-  ftr.className='b-footer';
-  var logo=document.createElement('div');
-  logo.className='b-ms-logo';
-  var icon=document.createElement('div');
-  icon.className='b-ms-icon';
-  icon.innerHTML=MS_ICON;
-  var wm=document.createElement('div');
-  wm.className='b-ms-wordmark';
-  wm.textContent='metricstream';
-  logo.appendChild(icon);logo.appendChild(wm);
-  var dateEl=document.createElement('div');
-  dateEl.className='b-footer-date';
-  dateEl.textContent=ev.date+' · '+ev.city;
-  ftr.appendChild(logo);ftr.appendChild(dateEl);
+  var ftr=document.createElement('div');ftr.className='b-footer';
+  var logo=document.createElement('div');logo.className='b-logo';
+  logo.innerHTML='<svg width="16" height="12" viewBox="0 0 36 28" fill="none"><path d="M5.5 22.5C3.5 20.5 2 17.5 2 14C2 7.4 7.4 2 14 2C17.2 2 20 3.2 22.1 5.2L17 10.3C15.9 9.5 14.5 9 13 9C9.7 9 7 11.7 7 15C7 16.5 7.5 17.9 8.4 19L5.5 22.5Z" fill="#4ecdc4"/><path d="M22.5 5.5C24.5 7.5 26 10.5 26 14C26 20.6 20.6 26 14 26C10.8 26 8 24.8 5.9 22.8L11 17.7C12.1 18.5 13.5 19 15 19C18.3 19 21 16.3 21 13C21 11.5 20.5 10.1 19.6 9L22.5 5.5Z" fill="#1d9e75"/></svg><span class="b-logo-text">metricstream</span>';
+  var dt=document.createElement('div');dt.className='b-date';dt.textContent=ev.date+' · '+ev.city;
+  ftr.appendChild(logo);ftr.appendChild(dt);
 
-  canvas.appendChild(hdr);canvas.appendChild(body);canvas.appendChild(ftr);
+  wrap.appendChild(hdr);wrap.appendChild(body);wrap.appendChild(ftr);
 
   setTimeout(function(){
-    try{
-      new QRCode(document.getElementById(qrId),{
-        text:ev.url,width:68,height:68,
-        colorDark:'#1a2744',colorLight:'#ffffff',
-        correctLevel:QRCode.CorrectLevel.M
-      });
-    }catch(e){}
-  },60);
+    try{new QRCode(document.getElementById(qid),{text:url,width:64,height:64,colorDark:'#1a2744',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});}catch(e){}
+  },80+idx*30);
 
-  return canvas;
+  return wrap;
 }
 
-function render(){
-  var fname=(document.getElementById('fname').value||'').trim();
-  var lname=(document.getElementById('lname').value||'').trim();
-  var fullName=(fname+' '+lname).trim()||'Attendee Name';
-  var org=document.getElementById('org').value||'Organisation';
-  var title=document.getElementById('jobtitle').value||'Job Title';
-  var email=document.getElementById('email').value||'';
-  var bid=document.getElementById('badgeid').value||genId(fullName);
-  var ev=EVENTS[curEvent];
-  var preview=document.getElementById('single-preview');
-  preview.innerHTML='';
-  preview.appendChild(buildBadge(fullName,org,title,email,bid,ev));
+var idx=0; // global for setTimeout closure
+
+function doScan(){
+  var val=document.getElementById('scaninput').value.trim().toUpperCase();
+  var res=document.getElementById('scan-result');
+  res.style.display='';
+  if(!val){res.className='scan-result scan-err';res.textContent='Please enter a badge ID.';return;}
+  var found=null;
+  for(var i=0;i<attendees.length;i++){if(attendees[i].id.toUpperCase()===val){found=attendees[i];break;}}
+  if(!found){res.className='scan-result scan-err';res.textContent='Badge ID not found: '+val;return;}
+  if(found.checkedIn){
+    res.className='scan-result scan-dupe';
+    res.textContent='⚠ Already checked in: '+found.name+' ('+found.checkTime+')';
+  } else {
+    found.checkedIn=true;
+    found.checkTime=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+    res.className='scan-result scan-ok';
+    res.textContent='✓ Checked in: '+found.name+' · '+found.company;
+  }
+  document.getElementById('scaninput').value='';
+  document.getElementById('scaninput').focus();
 }
 
-function renderBulk(){
-  var raw=document.getElementById('bulkdata').value.trim();
-  var ev=EVENTS[curEvent];
-  var errEl=document.getElementById('parse-error');
-  var countEl=document.getElementById('bulk-count');
-  var preview=document.getElementById('bulk-preview');
-  preview.innerHTML='';errEl.style.display='none';
-  if(!raw){countEl.textContent='';return;}
-  var lines=raw.split('\n').filter(function(l){return l.trim();});
-  var parsed=[];var errors=[];
-  lines.forEach(function(line,i){
-    var p=line.split('|').map(function(x){return x.trim();});
-    if(!p[0]){errors.push('Line '+(i+1)+': missing name');return;}
-    parsed.push({name:p[0]||'',org:p[1]||'',title:p[2]||'',email:p[3]||''});
+function renderDashboard(){
+  var q=(document.getElementById('search').value||'').toLowerCase();
+  var total=attendees.length;
+  var checked=attendees.filter(function(a){return a.checkedIn;}).length;
+  document.getElementById('d-total').textContent=total;
+  document.getElementById('d-checked').textContent=checked;
+  document.getElementById('d-pct').textContent=total?Math.round(checked/total*100)+'%':'0%';
+  var filtered=attendees.filter(function(a){
+    return !q||(a.name+a.company+a.designation+a.id).toLowerCase().indexOf(q)>-1;
   });
-  if(errors.length){errEl.textContent=errors.join(' · ');errEl.style.display='';}
-  countEl.textContent=parsed.length+' badge'+(parsed.length===1?'':'s')+' ready to print';
-  parsed.forEach(function(p,i){
-    setTimeout(function(){
-      var bid=genId(p.name);
-      preview.appendChild(buildBadge(p.name,p.org,p.title,p.email,bid,ev));
-    },i*100);
+  var tbody=document.getElementById('dashboard-body');
+  tbody.innerHTML='';
+  filtered.forEach(function(a){
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td style="font-family:monospace;font-size:12px">'+a.id+'</td><td style="font-weight:500">'+a.name+'</td><td style="color:#6b7280">'+a.company+'</td><td style="color:#6b7280">'+a.designation+'</td><td>'+(a.checkedIn?'<span class="pill pill-in">Checked in</span>':'<span class="pill pill-out">Pending</span>')+'</td><td style="font-size:12px;color:#6b7280">'+(a.checkTime||'—')+'</td>';
+    if(!a.checkedIn){
+      tr.style.cursor='pointer';
+      tr.title='Click to check in manually';
+      tr.onclick=(function(att){return function(){att.checkedIn=true;att.checkTime=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});renderDashboard();};})(a);
+    }
+    tbody.appendChild(tr);
   });
 }
 
-function resetSingle(){
-  ['fname','lname','org','jobtitle','email','badgeid'].forEach(function(id){document.getElementById(id).value='';});
-  badgeCounter=1;render();
+function exportCSV(){
+  if(!attendees.length){alert('No attendees yet.');return;}
+  var rows=[['ID','Name','Company','Designation','Email','Status','Check-in Time']];
+  attendees.forEach(function(a){rows.push([a.id,a.name,a.company,a.designation,a.email,a.checkedIn?'Checked In':'Pending',a.checkTime||'']);});
+  var csv=rows.map(function(r){return r.map(function(c){return '"'+(c||'').replace(/"/g,'""')+'"';}).join(',');}).join('\n');
+  var blob=new Blob([csv],{type:'text/csv'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');a.href=url;a.download='metricstream-attendance.csv';a.click();URL.revokeObjectURL(url);
 }
 
-render();
+function resetCheckins(){
+  if(!confirm('Reset all check-ins? This cannot be undone.'))return;
+  attendees.forEach(function(a){a.checkedIn=false;a.checkTime='';});
+  renderDashboard();
+}
+
+// Handle QR scan via URL param
+(function(){
+  var p=new URLSearchParams(window.location.search);
+  var id=p.get('id');
+  if(id){
+    document.body.innerHTML='<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:system-ui;background:#e1f5ee"><div style="text-align:center;padding:2rem"><div style="font-size:64px;margin-bottom:1rem">✅</div><h2 style="color:#0f6e56;font-size:24px;margin-bottom:8px">You\'re checked in!</h2><p style="color:#1d9e75;font-size:16px">Badge ID: '+id+'</p><p style="color:#6b7280;margin-top:8px;font-size:13px">MetricStream · Driving AI Governance</p></div></div>';
+  }
+})();
 </script>
+</body>
+</html>
