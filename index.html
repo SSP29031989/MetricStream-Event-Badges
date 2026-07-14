@@ -289,7 +289,7 @@ function makeBadge(a,uid){
   wrap.appendChild(hdr);wrap.appendChild(body);wrap.appendChild(ftr);
 
   setTimeout(function(){
-    try{new QRCode(document.getElementById(uid+'_qr'),{text:url,width:50,height:50,colorDark:'#1a2744',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});}catch(e){}
+    try{new QRCode(document.getElementById(uid+'_qr'),{text:url,width:40,height:40,colorDark:'#1a2744',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});}catch(e){}
   },80);
 
   return wrap;
