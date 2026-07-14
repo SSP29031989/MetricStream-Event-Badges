@@ -272,10 +272,18 @@ function makeBadge(a,prefix){
 
   // Header
   var hdr=document.createElement('div');hdr.className='b-header';
-  var ey=document.createElement('div');ey.className='b-eyebrow';ey.textContent=ev.label;
+  // Header top row: eyebrow left, MetricStream logo right
+  var hdrTop=document.createElement('div');
+  hdrTop.style.cssText='display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px';
+  var ey=document.createElement('div');ey.className='b-eyebrow';ey.style.margin='0';ey.textContent=ev.label;
+  var msLogo=document.createElement('div');
+  msLogo.style.cssText='flex-shrink:0;display:flex;align-items:center;gap:3px';
+  msLogo.innerHTML='<img src="ms-logo-white.png" style="height:14px;object-fit:contain;display:block" onerror="this.style.display=\'none\';this.nextSibling.style.display=\'flex\'">'
+    +'<div style="display:none;align-items:center;gap:3px"><svg width="16" height="12" viewBox="0 0 64 50" fill="none"><defs><linearGradient id="mg" x1="0" y1="50" x2="64" y2="0" gradientUnits="userSpaceOnUse"><stop stop-color="#00C8A0"/><stop offset="1" stop-color="#00FFE0"/></linearGradient></defs><path d="M2 46 L2 26 Q2 4 14 4 Q24 4 24 20 L24 46M24 46 L24 20 Q24 4 36 4 Q48 4 48 26 L48 46" stroke="url(#mg)" stroke-width="6" stroke-linecap="round" fill="none"/><path d="M52 4 C52 4 53.5 1 55 4 C56.5 7 59 8 59 8 C59 8 56.5 9 55 12 C53.5 15 52 12 52 12 C52 12 50.5 9 48 8 C50.5 7 52 4 52 4Z" fill="#00FFE0"/></svg><span style="font-size:9px;font-weight:800;color:#fff;font-family:Arial,sans-serif;white-space:nowrap">metricstream</span></div>';
+  hdrTop.appendChild(ey);hdrTop.appendChild(msLogo);
   var nm=document.createElement('div');nm.className='b-name';nm.textContent=a.name||'Attendee';
   var sb=document.createElement('div');sb.className='b-sub';sb.textContent=(a.company||'')+(a.designation?' · '+a.designation:'');
-  hdr.appendChild(ey);hdr.appendChild(nm);hdr.appendChild(sb);
+  hdr.appendChild(hdrTop);hdr.appendChild(nm);hdr.appendChild(sb);
 
   // Body
   var body=document.createElement('div');body.className='b-body';
@@ -289,8 +297,14 @@ function makeBadge(a,prefix){
 
   // Footer
   var ftr=document.createElement('div');ftr.className='b-footer';
+  // Expleo logo bottom left
   var logo=document.createElement('div');logo.className='b-logo';
-  logo.innerHTML='<svg width="16" height="12" viewBox="0 0 36 28" fill="none"><path d="M5.5 22.5C3.5 20.5 2 17.5 2 14C2 7.4 7.4 2 14 2C17.2 2 20 3.2 22.1 5.2L17 10.3C15.9 9.5 14.5 9 13 9C9.7 9 7 11.7 7 15C7 16.5 7.5 17.9 8.4 19L5.5 22.5Z" fill="#4ecdc4"/><path d="M22.5 5.5C24.5 7.5 26 10.5 26 14C26 20.6 20.6 26 14 26C10.8 26 8 24.8 5.9 22.8L11 17.7C12.1 18.5 13.5 19 15 19C18.3 19 21 16.3 21 13C21 11.5 20.5 10.1 19.6 9L22.5 5.5Z" fill="#1d9e75"/></svg><span class="b-logo-text">Expleo</span>';
+  logo.innerHTML='<img src="expleo-logo.png" style="height:13px;object-fit:contain;display:block" onerror="this.style.display=\'none\';this.nextSibling.style.display=\'flex\'">'
+    +'<div style="display:none;align-items:center;gap:0">'
+    +'<span style="color:#6B4EE6;font-size:13px;font-weight:900;font-family:Arial Black,Arial,sans-serif;line-height:1">[ </span>'
+    +'<span style="color:#6B4EE6;font-size:11px;font-weight:900;font-family:Arial Black,Arial,sans-serif;letter-spacing:.5px;line-height:1">expleo</span>'
+    +'<span style="color:#6B4EE6;font-size:13px;font-weight:900;font-family:Arial Black,Arial,sans-serif;line-height:1"> ]</span>'
+    +'</div>';
   var dt=document.createElement('div');dt.className='b-date';dt.textContent=ev.date+' · '+ev.city;
   ftr.appendChild(logo);ftr.appendChild(dt);
 
