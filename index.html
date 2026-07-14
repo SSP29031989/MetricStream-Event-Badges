@@ -80,11 +80,19 @@ input:focus,textarea:focus{outline:none;border-color:var(--teal-dark)}
 @media print{
   body{background:white}
   .no-print{display:none!important}
-  .badge-grid{display:flex;flex-wrap:wrap;gap:6mm;padding:8mm}
-  .badge{width:9.5cm;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .b-name{font-size:16px}
-  .panel,.tabs,.site-header{display:none}
-  .print-only-grid{display:block!important}
+  .print-only-grid{display:flex!important;flex-wrap:wrap;gap:4mm;padding:6mm}
+  .badge{width:2.9cm;-webkit-print-color-adjust:exact;print-color-adjust:exact;page-break-inside:avoid;border-radius:3px}
+  .b-header{padding:2px 4px}
+  .b-eyebrow{font-size:3px}
+  .b-body{padding:4px 5px;gap:3px}
+  .b-qr{width:36px;height:36px}
+  .b-qr img,.b-qr canvas{width:36px!important;height:36px!important}
+  .b-detail-name{font-size:6px}
+  .b-detail-company{font-size:5px}
+  .b-detail-title{font-size:4.5px}
+  .b-footer{padding:2px 4px}
+  .b-date{font-size:4px}
+  .panel,.tabs,.site-header{display:none!important}
 }
 .print-only-grid{display:none}
 </style>
@@ -289,7 +297,7 @@ function makeBadge(a,uid){
   wrap.appendChild(hdr);wrap.appendChild(body);wrap.appendChild(ftr);
 
   setTimeout(function(){
-    try{new QRCode(document.getElementById(uid+'_qr'),{text:url,width:40,height:40,colorDark:'#1a2744',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});}catch(e){}
+    try{new QRCode(document.getElementById(uid+'_qr'),{text:url,width:44,height:44,colorDark:'#1a2744',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});}catch(e){}
   },80);
 
   return wrap;
