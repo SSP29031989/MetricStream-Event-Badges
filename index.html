@@ -124,7 +124,7 @@ input:focus,textarea:focus{outline:none;border-color:var(--teal-dark)}
   <div class="form-row">
     <div class="fg" style="margin:0">
       <label>Event name</label>
-      <input id="evname" value="Driving AI Governance">
+      <input id="evname" value="Executive Workshop-The AI Way to Enterprise GRC">
     </div>
     <div class="fg" style="margin:0">
       <label>ID prefix</label>
@@ -201,8 +201,8 @@ input:focus,textarea:focus{outline:none;border-color:var(--teal-dark)}
 <script>
 var attendees=[], curEv='manila';
 var EVENTS={
-  manila:{city:'Manila, Philippines',date:'21 July 2026',label:'DRIVING AI GOVERNANCE',url:''},
-  kl:{city:'Kuala Lumpur, Malaysia',date:'23 July 2026',label:'DRIVING AI GOVERNANCE',url:''}
+  manila:{city:'Manila, Philippines',date:'21 July 2026',label:'Executive Workshop-The AI Way to Enterprise GRC',url:''},
+  kl:{city:'Kuala Lumpur, Malaysia',date:'23 July 2026',label:'Executive Workshop-The AI Way to Enterprise GRC',url:''}
 };
 
 function selEv(e){
@@ -228,7 +228,7 @@ function generate(){
   var raw=document.getElementById('attendeelist').value.trim();
   if(!raw){alert('Please enter at least one attendee.');return;}
   var prefix=document.getElementById('idprefix').value.trim()||'MSGRC';
-  var evname=document.getElementById('evname').value.trim()||'Driving AI Governance';
+  var evname=document.getElementById('evname').value.trim()||'Executive Workshop-The AI Way to Enterprise GRC';
   var publink=document.getElementById('publink').value.trim();
   EVENTS[curEv].url=publink||(window.location.href.split('?')[0]);
   document.querySelector('.site-header h1').textContent=evname;
@@ -385,7 +385,7 @@ function resetCheckins(){
   var p=new URLSearchParams(window.location.search);
   var id=p.get('id');
   if(id){
-    document.body.innerHTML='<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:system-ui;background:#e1f5ee"><div style="text-align:center;padding:2rem"><div style="font-size:64px;margin-bottom:1rem">✅</div><h2 style="color:#0f6e56;font-size:24px;margin-bottom:8px">You\'re checked in!</h2><p style="color:#1d9e75;font-size:16px">Badge ID: '+id+'</p><p style="color:#6b7280;margin-top:8px;font-size:13px">MetricStream · Driving AI Governance</p></div></div>';
+    document.body.innerHTML='<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:system-ui;background:#e1f5ee"><div style="text-align:center;padding:2rem"><div style="font-size:64px;margin-bottom:1rem">✅</div><h2 style="color:#0f6e56;font-size:24px;margin-bottom:8px">You\'re checked in!</h2><p style="color:#1d9e75;font-size:16px">Badge ID: '+id+'</p><p style="color:#6b7280;margin-top:8px;font-size:13px">MetricStream · Executive Workshop-The AI Way to Enterprise GRC</p></div></div>';
   }
 })();
 </script>
