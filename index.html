@@ -202,6 +202,10 @@ input:focus,textarea:focus{outline:none;border-color:var(--teal)}
 </div>
 
 <div class="panel no-print" id="step-1" style="display:none">
+  <div id="restore-banner" style="display:none;background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:10px 14px;margin-bottom:14px;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap">
+    <span style="font-size:13px;color:#92400e">✦ Previous session restored — QR codes and check-ins are intact.</span>
+    <button class="btn" onclick="clearAll()" style="font-size:12px;padding:5px 12px;color:#991b1b;border-color:#fca5a5">Clear &amp; start fresh</button>
+  </div>
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:8px">
     <div style="font-size:14px;color:var(--muted)" id="badge-count-label"></div>
     <div class="btn-row" style="margin:0">
@@ -243,6 +247,7 @@ input:focus,textarea:focus{outline:none;border-color:var(--teal)}
   <div style="margin-top:1rem;display:flex;gap:8px;flex-wrap:wrap">
     <button class="btn btn-teal" onclick="exportCSV()">↓ Export CSV</button>
     <button class="btn" onclick="resetCheckins()">↺ Reset check-ins</button>
+    <button class="btn" onclick="clearAll()" style="color:#991b1b;border-color:#fca5a5">✕ Clear all</button>
   </div>
 </div>
 
