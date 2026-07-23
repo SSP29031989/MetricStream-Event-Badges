@@ -282,6 +282,7 @@ var EXPLEO_LOGO='<img src="expleo-logo.png" style="height:4px;object-fit:contain
 /* ── Persistence ── */
 var STORE_KEY='ms_event_attendees';
 var EV_KEY='ms_event_current';
+var TAB_KEY='ms_event_tab';
 
 function saveState(){
   try{localStorage.setItem(STORE_KEY,JSON.stringify(attendees));localStorage.setItem(EV_KEY,curEv);}catch(e){}
@@ -299,7 +300,8 @@ function loadState(){
         buildBadges();
         var banner=document.getElementById('restore-banner');
         if(banner)banner.style.display='flex';
-        goTo(1);
+        var savedTab=parseInt(localStorage.getItem(TAB_KEY),10);
+        goTo(isNaN(savedTab)?1:savedTab);
       }
     }
   }catch(e){}
@@ -307,7 +309,7 @@ function loadState(){
 function clearAll(){
   if(!confirm('Clear all attendees and start fresh? This cannot be undone.'))return;
   attendees=[];counter=1;
-  try{localStorage.removeItem(STORE_KEY);localStorage.removeItem(EV_KEY);}catch(e){}
+  try{localStorage.removeItem(STORE_KEY);localStorage.removeItem(EV_KEY);localStorage.removeItem(TAB_KEY);}catch(e){}
   goTo(0);
 }
 
