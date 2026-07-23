@@ -248,6 +248,7 @@ input:focus,textarea:focus{outline:none;border-color:var(--teal)}
     <button class="btn btn-teal" onclick="exportCSV()">↓ Export CSV</button>
     <button class="btn" onclick="resetCheckins()">↺ Reset check-ins</button>
     <button class="btn" onclick="clearAll()" style="color:#991b1b;border-color:#fca5a5">✕ Clear all</button>
+    <button class="btn" onclick="clearAll()" style="color:#991b1b;border-color:#fca5a5">✕ Clear all</button>
   </div>
 </div>
 
@@ -262,6 +263,38 @@ var EVENTS={
 var EYEBROW='THE AI WAY OF BUILDING ENTERPRISE GRC';
 var MS_LOGO='<img src="ms-logo.png" style="height:10.4px;object-fit:contain;display:block" onerror="this.outerHTML=\'<span style=&quot;font-size:6.5px;font-weight:800;color:#fff;font-family:Arial,sans-serif;white-space:nowrap&quot;>metricstream</span>\'">';
 var EXPLEO_LOGO='<img src="expleo-logo.png" style="height:4px;object-fit:contain;display:block" onerror="this.outerHTML=\'<div style=&quot;display:flex;align-items:center;line-height:1&quot;><span style=&quot;color:#6B4EE6;font-size:3.5px;font-weight:900;font-family:Arial Black,Arial,sans-serif&quot;>[</span><span style=&quot;color:#6B4EE6;font-size:2.5px;font-weight:900;font-family:Arial Black,Arial,sans-serif;letter-spacing:1px;padding:0 1px&quot;>expleo</span><span style=&quot;color:#6B4EE6;font-size:3.5px;font-weight:900;font-family:Arial Black,Arial,sans-serif&quot;>]</span></div>\'">';
+
+/* ── Persistence ── */
+var STORE_KEY='ms_event_attendees';
+var EV_KEY='ms_event_current';
+
+function saveState(){
+  try{localStorage.setItem(STORE_KEY,JSON.stringify(attendees));localStorage.setItem(EV_KEY,curEv);}catch(e){}
+}
+function loadState(){
+  try{
+    var ev=localStorage.getItem(EV_KEY);
+    if(ev){curEv=ev;selEv(ev);}
+    var raw=localStorage.getItem(STORE_KEY);
+    if(raw){
+      var loaded=JSON.parse(raw);
+      if(loaded.length){
+        attendees=loaded;
+        counter=attendees.length+1;
+        buildBadges();
+        var banner=document.getElementById('restore-banner');
+        if(banner)banner.style.display='flex';
+        goTo(1);
+      }
+    }
+  }catch(e){}
+}
+function clearAll(){
+  if(!confirm('Clear all attendees and start fresh? This cannot be undone.'))return;
+  attendees=[];counter=1;
+  try{localStorage.removeItem(STORE_KEY);localStorage.removeItem(EV_KEY);}catch(e){}
+  goTo(0);
+}
 
 function selEv(e){curEv=e;document.getElementById('esel-manila').classList.toggle('active',e==='manila');document.getElementById('esel-kl').classList.toggle('active',e==='kl');}
 function goTo(n){for(var i=0;i<4;i++){document.getElementById('step-'+i).style.display=i===n?'':'none';document.querySelectorAll('.tab')[i].classList.toggle('active',i===n);}if(n===3)renderDash();}
@@ -356,7 +389,13 @@ function renderDash(){
   list.forEach(function(a){
     var tr=document.createElement('tr');
     tr.innerHTML='<td style="font-family:monospace;font-size:12px">'+a.id+'</td><td style="font-weight:500">'+a.name+'</td><td style="color:#7a7870">'+a.company+'</td><td style="color:#7a7870">'+a.designation+'</td><td>'+(a.checkedIn?'<span class="pill pill-in">Checked in</span>':'<span class="pill pill-out">Pending</span>')+'</td><td style="font-size:12px;color:#7a7870">'+(a.checkTime||'—')+'</td>';
-    if(!a.checkedIn){tr.style.cursor='pointer';tr.title='Click to check in manually';tr.onclick=(function(x){return function(){x.checkedIn=true;x.checkTime=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});renderDash();};})(a);}
+    if(!a.checkedIn){
+      tr.style.cursor='pointer';tr.title='Click to check in manually';
+      tr.onclick=(function(x){return function(){
+        x.checkedIn=true;x.checkTime=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+        saveState();renderDash();
+      };})(a);
+    }
     tb.appendChild(tr);
   });
 }
@@ -379,7 +418,24 @@ function resetCheckins(){
 (function(){
   var p=new URLSearchParams(window.location.search);
   var id=p.get('id');
-  if(id){document.body.innerHTML='<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:system-ui;background:#e1f5ee"><div style="text-align:center;padding:2rem;max-width:360px"><div style="font-size:56px;margin-bottom:1rem">✅</div><h2 style="color:#0f1f3d;font-size:22px;font-weight:700;margin-bottom:8px">You\'re checked in!</h2><p style="color:#1d9e75;font-size:15px;font-weight:600;margin-bottom:4px">Badge ID: '+id+'</p><p style="color:#7a7870;font-size:13px">MetricStream · The AI Way of Building Enterprise GRC</p></div></div>';}
+  if(id){
+    try{
+      var raw=localStorage.getItem(STORE_KEY);
+      if(raw){
+        var list=JSON.parse(raw);
+        var found=null;
+        for(var i=0;i<list.length;i++){if(list[i].id===id){found=list[i];break;}}
+        if(found&&!found.checkedIn){
+          found.checkedIn=true;
+          found.checkTime=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+          localStorage.setItem(STORE_KEY,JSON.stringify(list));
+        }
+      }
+    }catch(e){}
+    document.body.innerHTML='<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:system-ui;background:#e1f5ee"><div style="text-align:center;padding:2rem;max-width:360px"><div style="font-size:56px;margin-bottom:1rem">✅</div><h2 style="color:#0f1f3d;font-size:22px;font-weight:700;margin-bottom:8px">You\'re checked in!</h2><p style="color:#1d9e75;font-size:15px;font-weight:600;margin-bottom:4px">Badge ID: '+id+'</p><p style="color:#7a7870;font-size:13px">MetricStream · The AI Way of Building Enterprise GRC</p></div></div>';
+    return;
+  }
+  loadState();
 })();
 </script>
 </body>
