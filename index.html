@@ -210,9 +210,24 @@ input:focus,textarea:focus{outline:none;border-color:var(--teal)}
     <div style="font-size:14px;color:var(--muted)" id="badge-count-label"></div>
     <div class="btn-row" style="margin:0">
       <button class="btn" onclick="goTo(0)">← Back</button>
+      <button class="btn btn-teal" onclick="showAddPanel()">+ Add Walk-in</button>
       <button class="btn btn-teal" onclick="window.print()">⎙ Print all badges</button>
     </div>
   </div>
+
+  <div id="add-panel" style="display:none;background:#f4f2ee;border:1px solid #e2ddd6;border-radius:10px;padding:14px;margin-bottom:16px">
+    <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:8px">Add Walk-in Attendee(s)</div>
+    <div class="fg" style="margin-bottom:8px">
+      <label>Name, Company, Designation — one per line</label>
+      <textarea id="addlist" style="min-height:80px" placeholder="Juan Dela Cruz, ABC Corp, Head of Risk"></textarea>
+      <div class="hint">Existing attendees and their check-in status are kept untouched. New badges are added to the end of the list.</div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="addWalkins()">Add &amp; Generate Badge(s)</button>
+      <button class="btn" onclick="hideAddPanel()">Cancel</button>
+    </div>
+  </div>
+
   <div class="badge-grid" id="badge-grid"></div>
 </div>
 
